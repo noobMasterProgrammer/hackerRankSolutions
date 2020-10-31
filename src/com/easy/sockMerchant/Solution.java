@@ -1,4 +1,4 @@
-package com.easy.asockMerchant;
+package com.easy.sockMerchant;
 
 import java.io.IOException;
 import java.util.HashMap;
