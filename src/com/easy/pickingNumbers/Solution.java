@@ -7,8 +7,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 class Result {
@@ -21,28 +22,37 @@ class Result {
 	 */
 
 	public static int pickingNumbers(List<Integer> a) {
-		Collections.sort(a);
-		int index = 1;
-		int start = a.get(0);
-		int count = 1;
-		int max = 1;
-		while (index < a.size()) {
-			if (mod(start - a.get(index)) <= 1) {
-				count++;
+		int maxSize = 0;
+		int flagSize = 0;
+		int maxFlagSize = 0;
+		boolean flag[];
+		Map<Integer, Integer> occurances = new HashMap<>();
+		for (Integer i : a) {
+			if (!occurances.containsKey(i)) {
+				occurances.put(i, 1);
 			} else {
-				start = a.get(index);
-				if (count > max) {
-					max = count;
-				}
-				count = 1;
+				occurances.put(i, occurances.get(i) + 1);
 			}
-			index++;
+			if (maxFlagSize < occurances.get(i)) {
+				maxFlagSize = occurances.get(i);
+			}
 		}
-		return max;
-	}
-
-	private static int mod(int i) {
-		return i >= 0 ? i : (-1) * i;
+		flag = new boolean[maxFlagSize + 1];
+		for (Map.Entry<Integer, Integer> occurance : occurances.entrySet()) {
+			flag[occurance.getValue()] = true;
+			if (occurances.containsKey(occurance.getKey() + 1)) {
+				int tempSize = occurance.getValue() + occurances.get(occurance.getKey() + 1);
+				if (maxSize < tempSize) {
+					maxSize = tempSize;
+				}
+			}
+		}
+		for (int i = 1; i <= maxFlagSize; i++) {
+			if (flag[i]) {
+				flagSize = i;
+			}
+		}
+		return maxSize >= flagSize ? maxSize : flagSize;
 	}
 }
 
